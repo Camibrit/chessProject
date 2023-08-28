@@ -32,6 +32,8 @@ public ChessPiece[][] getPieces() {
 	    
 	    validateSourcePosition(source);
 	    
+	    validateTargetPosition1(source, target);
+	    
 	    Piece capturedPiece = makeMove(source, target);
 	    return (ChessPiece) capturedPiece;
 	}
@@ -59,7 +61,17 @@ public ChessPiece[][] getPieces() {
 		throw new ChessException("There is no possible move for the chosen piece");
 
 	}
+	
 	}
+	private void validateTargetPosition1(Position source,Position target) {
+
+		if(!board.piece(source).possibleMove(target)) {
+		throw new ChessException("The chosen piece can't move to target positon");
+		}
+	}
+
+	
+	
 
 private void placeNewPiece(char column, int row, ChessPiece piece) {
 	board.placePiece(piece, new ChessPosition(column, row).toPosition());
