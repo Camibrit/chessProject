@@ -39,9 +39,10 @@ public class ChessMatch {
     public boolean getCheck() {
         return check;
     }
+
     public boolean getCheckMate() {
-		return checkMate;
-	}
+        return checkMate;
+    }
 
     public ChessPiece[][] getPieces() {
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
@@ -65,47 +66,47 @@ public class ChessMatch {
         validateSourcePosition(source);
         validateTargetPosition1(source, target);
         Piece capturedPiece = makeMove(source, target);
-       
 
         if (testCheck(currentPlayer)) {
             undoMove(source, target, capturedPiece);
             throw new ChessException("You can't put yourself in check");
         }
-    
-    
+
         check = (testCheck(opponent(currentPlayer))) ? true : false;
 
-		if (testCheckMate(opponent(currentPlayer))) {
-			checkMate = true;
-		}
-    
-    
-		else {
-        nextTurn();
-        
-		}
-        return (ChessPiece) capturedPiece; 
+        if (testCheckMate(opponent(currentPlayer))) {
+            checkMate = true;
+        } else {
+            nextTurn();
+        }
+        return (ChessPiece) capturedPiece;
     }
-    
-    
+
     private Piece makeMove(Position source, Position target) {
-        ChessPiece p = (ChessPiece) board.removePiece(source);
-        Piece capturedPiece = board.removePiece(target);
-        board.placePiece(p, target);
-        return capturedPiece;
+		ChessPiece p = (ChessPiece)board.removePiece(source);
+		p.increaseMoveCount();
+		Piece capturedPiece = board.removePiece(target);
+		board.placePiece(p, target);
+		if (capturedPiece != null) {
+			piecesOnTheBoard.remove(capturedPiece);
+			capturedPieces.add(capturedPiece);
+		}
     }
 
     private void undoMove(Position source, Position target, Piece capturedPiece) {
-        ChessPiece p = (ChessPiece) board.removePiece(target);
-        p.increaseMoveCount();
-        board.placePiece(p, source);
-
+		ChessPiece p = (ChessPiece)board.removePiece(target);
+		p.decreaseMoveCount();
+		board.placePiece(p, source);
         if (capturedPiece != null) {
             board.placePiece(capturedPiece, target);
             capturedPieces.remove(capturedPiece);
             piecesOnTheBoard.add(capturedPiece);
         }
     }
+
+
+
+
 
 
     private void validateSourcePosition(Position position) {
